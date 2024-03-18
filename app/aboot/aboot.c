@@ -2074,6 +2074,9 @@ int boot_linux_from_mmc(void)
 		}
 	}
 
+	if (kptr->text_offset > 2 * 1024 * 1024)
+		kptr->text_offset = 0; // HACK
+
 	/*
 	 * Update the kernel/ramdisk/tags address if the boot image header
 	 * has default values, these default values come from mkbootimg when
