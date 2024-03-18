@@ -31,13 +31,19 @@ static int lk2nd_simplefb_dt_update(void *dtb, const char *cmdline,
 	if (!fb)
 		return 0;
 
-	fb_size = fb->stride * fb->bpp/8 * fb->height;
-
 	if (boot_type & (BOOT_DOWNSTREAM | BOOT_LK2ND))
 		return 0;
 
 	if (!lk2nd_cmdline_scan_arg(cmdline, "lk2nd.pass-simplefb", args, sizeof(args)))
 		return 0;
+
+	if (!strcmp(args, "uboot")) {
+		dprintf(INFO, "simplefb: switching to xrgb888 because u-boot can't do 24\n");
+		mdp_set_xrgb8888(fb);
+		//mdp_set_rgb565(fb);
+	}
+
+	fb_size = fb->stride * fb->bpp/8 * fb->height;
 
 	resmem_offset = fdt_path_offset(dtb, "/reserved-memory");
 	if (resmem_offset < 0)
@@ -116,13 +122,17 @@ static int lk2nd_simplefb_dt_update(void *dtb, const char *cmdline,
 	if (ret < 0)
 		return 0;
 
-	switch (fb->format) {
-		case FB_FORMAT_RGB565:
+	switch (fb->bpp) {
+		case 16:
 			ret = fdt_setprop_string(dtb, offset, "format", "r5g6b5");
 			break;
 
-		case FB_FORMAT_RGB888:
+		case 24:
 			ret = fdt_setprop_string(dtb, offset, "format", "r8g8b8");
+			break;
+
+		case 32:
+			ret = fdt_setprop_string(dtb, offset, "format", "x8r8g8b8");
 			break;
 
 		default:

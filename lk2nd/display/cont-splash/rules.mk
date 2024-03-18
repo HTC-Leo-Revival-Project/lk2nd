@@ -14,3 +14,4 @@ OBJS += \
 	$(if $(filter MDP4=1 MDP5=1, $(DEFINES)), $(LOCAL_DIR)/pipe.o) \
 	$(LOCAL_DIR)/refresh.o \
 	$(LOCAL_DIR)/target_display.o \
+	$(LOCAL_DIR)/convert-neon.o \
