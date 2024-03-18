@@ -3384,6 +3384,9 @@ void cmd_boot(const char *arg, void *data, unsigned sz)
 		kernel_size = hdr->kernel_size;
 	}
 
+	if (kptr->text_offset > 2 * 1024 * 1024)
+		kptr->text_offset = 0; // HACK
+
 	/*
 	 * Update the kernel/ramdisk/tags address if the boot image header
 	 * has default values, these default values come from mkbootimg when
