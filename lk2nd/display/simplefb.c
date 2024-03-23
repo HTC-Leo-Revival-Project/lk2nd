@@ -83,6 +83,10 @@ static int lk2nd_simplefb_dt_update(void *dtb, const char *cmdline,
 			return 0;
 	}
 
+	ret = fdt_setprop_empty(dtb, chosen_offset, "ranges");
+	if (ret < 0)
+		return 0;
+
 	offset = fdt_node_offset_by_compatible(dtb, -1, "simple-framebuffer");
 	if (offset < 0 && offset != -FDT_ERR_NOTFOUND)
 		return 0;
