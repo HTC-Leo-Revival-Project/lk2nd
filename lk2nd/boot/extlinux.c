@@ -395,7 +395,7 @@ static void choose_addrs(const struct kernel64_hdr *kptr, struct load_addrs *add
 
 		/* U-Boot builds bogus .text_offset for some reason... */
 		if (kptr->text_offset > 2 * 1024 * 1024) {
-			dprintf(INFO, "WARNING: Kernel image has bogus text_offset: 0x%x > 2M\n", kptr->text_offset);
+			dprintf(INFO, "WARNING: Kernel image has bogus text_offset: 0x%llx > 2M\n", kptr->text_offset);
 			kernel_offset = 0;
 		}
 	} else {
