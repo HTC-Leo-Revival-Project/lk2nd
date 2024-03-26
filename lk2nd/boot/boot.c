@@ -42,7 +42,7 @@ static void lk2nd_scan_devices(void)
 		 * in case one installs next stage bootloader package (i.e. u-boot)
 		 * there but still wants to make use of lk2nd's device database.
 		 */
-		if (bdev->size < LK2ND_BOOT_MIN_SIZE && strncmp(bdev->name, "boot", strlen("boot")))
+		if (bdev->size < LK2ND_BOOT_MIN_SIZE && !!strncmp(bdev->label, "boot", strlen("boot")))
 			continue;
 
 		snprintf(mountpoint, sizeof(mountpoint), "/%s", bdev->name);
