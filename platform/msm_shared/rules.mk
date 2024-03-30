@@ -14,8 +14,12 @@ OBJS += \
 	$(LOCAL_DIR)/ab_partition_parser.o \
 	$(LOCAL_DIR)/hsusb.o \
 	$(LOCAL_DIR)/boot_stats.o \
-	$(LOCAL_DIR)/qgic_common.o \
 	$(LOCAL_DIR)/crc32.o
+
+ifeq ($(filter $(DEFINES), PLATFORM_VIC=1),)
+OBJS += \
+	$(LOCAL_DIR)/qgic_common.o
+endif
 
 ifneq ($(filter $(DEFINES), WITH_DEBUG_JTAG=1),)
 OBJS += \
@@ -50,8 +54,10 @@ OBJS += \
 	$(LOCAL_DIR)/mmc_sdhci.o \
 	$(LOCAL_DIR)/mmc_wrapper.o
 else
+ifeq ($(filter $(DEFINES), PLATFORM_NAND=1),)
 OBJS += \
 	$(LOCAL_DIR)/mmc.o
+endif
 endif
 
 ifeq ($(VERIFIED_BOOT),1)
