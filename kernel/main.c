@@ -63,11 +63,23 @@ static void call_constructors(void)
 
 uintptr_t __stack_chk_guard;
 
+uint8_t *start = (uint8_t *)0x02A00000;
+uint8_t *end = (uint8_t *)0x02ABBB00;
+
+void paint_screen(int color)
+{
+  for (uint8_t *ptr = start; ptr < end; ptr++) {
+    *ptr = color;
+  }
+}
+
 /* called from crt0.S */
 void kmain(void) __NO_RETURN __EXTERNALLY_VISIBLE;
 void kmain(void)
 {
 	thread_t *thr;
+
+	paint_screen(0xF);
 
 	// get us into some sort of thread context
 	thread_init_early();
