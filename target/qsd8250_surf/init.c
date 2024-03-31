@@ -163,7 +163,8 @@ unsigned board_machtype(void)
 
 void reboot_device(unsigned reboot_reason)
 {
-    reboot(reboot_reason);
+	// HACK: Disable for now until proc_comm is added
+    //reboot(reboot_reason);
 }
 
 unsigned check_reboot_mode(void)
