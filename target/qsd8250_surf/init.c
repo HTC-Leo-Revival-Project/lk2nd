@@ -92,7 +92,9 @@ void smem_ptable_init(void);
 unsigned smem_get_apps_flash_start(void);
 
 void keypad_init(void);
-
+void target_early_init(void){
+	
+}
 void target_init(void)
 {
 	unsigned offset;
