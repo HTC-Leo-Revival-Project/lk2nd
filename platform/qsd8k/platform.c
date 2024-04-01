@@ -86,40 +86,6 @@ static mmu_section_t mmu_section_table[] = {
 	{MSM_SHARED_BASE, MSM_SHARED_BASE, 1, KERNEL_MEMORY},
 };
 
-#define MB (1024*1024)
-
-#define MSM_IOMAP_SIZE ((MSM_IOMAP_END - MSM_IOMAP_BASE)/MB)
-
-/* LK memory - cacheable, write through */
-#define LK_MEMORY         (MMU_MEMORY_TYPE_NORMAL_WRITE_THROUGH | \
-                           MMU_MEMORY_AP_READ_WRITE)
-
-/* Peripherals - non-shared device */
-#define IOMAP_MEMORY      (MMU_MEMORY_TYPE_DEVICE_SHARED | \
-                           MMU_MEMORY_AP_READ_WRITE | MMU_MEMORY_XN)
-
-/* Kernel region - cacheable, write through */
-#define KERNEL_MEMORY     (MMU_MEMORY_TYPE_NORMAL_WRITE_THROUGH   | \
-                           MMU_MEMORY_AP_READ_WRITE | MMU_MEMORY_XN)
-
-/* Scratch region - cacheable, write through */
-#define SCRATCH_MEMORY    (MMU_MEMORY_TYPE_NORMAL_WRITE_THROUGH   | \
-                           MMU_MEMORY_AP_READ_WRITE | MMU_MEMORY_XN)
-
-/* IMEM memory - cacheable, write through */
-#define IMEM_MEMORY       (MMU_MEMORY_TYPE_NORMAL_WRITE_THROUGH | \
-                           MMU_MEMORY_AP_READ_WRITE | MMU_MEMORY_XN)
-
-static mmu_section_t mmu_section_table[] = {
-/*  Physical addr,    Virtual addr,    Size (in MB),   Flags */
-	{MEMBASE, MEMBASE, (MEMSIZE / MB), LK_MEMORY},
-	{BASE_ADDR, BASE_ADDR, 44, KERNEL_MEMORY},
-	{SCRATCH_ADDR, SCRATCH_ADDR, 384, SCRATCH_MEMORY},
-	{MSM_IOMAP_BASE, MSM_IOMAP_BASE, MSM_IOMAP_SIZE, IOMAP_MEMORY},
-	{MSM_IMEM_BASE, MSM_IMEM_BASE, 1, IMEM_MEMORY},
-	{MSM_SHARED_BASE, MSM_SHARED_BASE, 1, KERNEL_MEMORY},
-};
-
 void platform_early_init(void)
 {
         //uart3_clock_init();
@@ -166,42 +132,6 @@ void platform_init_timer(void)
 uint32_t platform_tick_rate(void)
 {
 	return ticks_per_sec1;
-}
-
-int platform_use_identity_mmu_mappings(void)
-{
-	/* Use only the mappings specified in this file. */
-	return 0;
-}
-
-addr_t platform_get_virt_to_phys_mapping(addr_t virt_addr)
-{
-	/* Return same address as we are using 1-1 mapping. */
-	return virt_addr;
-}
-
-addr_t platform_get_phys_to_virt_mapping(addr_t phys_addr)
-{
-	/* Return same address as we are using 1-1 mapping. */
-	return phys_addr;
-}
-
-/* Setup memory for this platform */
-void platform_init_mmu_mappings(void)
-{
-	uint32_t i;
-	uint32_t sections;
-	uint32_t table_size = ARRAY_SIZE(mmu_section_table);
-	for (i = 0; i < table_size; i++) {
-		sections = mmu_section_table[i].num_of_sections;
-		while (sections--) {
-			arm_mmu_map_section(mmu_section_table[i].paddress +
-					    sections * MB,
-					    mmu_section_table[i].vaddress +
-					    sections * MB,
-					    mmu_section_table[i].flags);
-		}
-	}
 }
 
 int platform_use_identity_mmu_mappings(void)
