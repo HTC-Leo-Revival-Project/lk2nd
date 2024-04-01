@@ -38,6 +38,7 @@
 #if ARCH_ARM
 #include <arch/arm.h>
 #endif
+#include <reg.h>
 
 void __attribute__ ((noreturn))
 __stack_chk_fail (void)
@@ -99,8 +100,19 @@ static int _dprintf_output_func(char c, void *state)
 	return INT_MAX;
 }
 
+uint8_t *uarttf1 = (uint8_t *)0xA9A0000C;
+
+void uart_putc_msm(uint8_t *Buffer, unsigned int numberofbytes){
+	unsigned int bytesSent = 0;
+	while (bytesSent < numberofbytes){
+		writel(Buffer[bytesSent], (unsigned int)uarttf1);
+		bytesSent++;
+	}
+}
+
 int _dprintf(const char *fmt, ...)
 {
+	//paint_screen2(0xF);
 	char ts_buf[13];
 	int err;
 
@@ -109,6 +121,8 @@ int _dprintf(const char *fmt, ...)
 
 	va_list ap;
 	va_start(ap, fmt);
+	unsigned int length = strlen(fmt);
+	uart_putc_msm(fmt,length);
 	err = _printf_engine(&_dprintf_output_func, NULL, fmt, ap);
 	va_end(ap);
 
