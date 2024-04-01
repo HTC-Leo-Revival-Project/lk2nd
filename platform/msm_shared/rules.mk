@@ -50,8 +50,11 @@ OBJS += \
 	$(LOCAL_DIR)/mmc_sdhci.o \
 	$(LOCAL_DIR)/mmc_wrapper.o
 else
+# qsd8k_hack
+ifeq ($(filter $(DEFINES), PLATFORM_NAND=1),)
 OBJS += \
 	$(LOCAL_DIR)/mmc.o
+endif
 endif
 
 ifeq ($(VERIFIED_BOOT),1)
@@ -88,6 +91,21 @@ endif
 ifneq ($(ENABLE_SMD_SUPPORT),1)
 OBJS += \
 	$(LOCAL_DIR)/rpm-ipc.o
+endif
+
+# qsd8k_hack (qgic probably shouldn't be compiled here, 
+# but code from it needs to be compiled in for the qgic checks in common interrupts code to work)
+
+ifeq ($(PLATFORM),qsd8k)
+	OBJS += $(LOCAL_DIR)/clock-local.o \
+			$(LOCAL_DIR)/clock.o \
+			$(LOCAL_DIR)/clock_pll.o \
+			$(LOCAL_DIR)/interrupts.o \
+			$(LOCAL_DIR)/qgic.o \
+			$(LOCAL_DIR)/board.o \
+			$(LOCAL_DIR)/scm.o \
+			$(LOCAL_DIR)/timer.o \
+			$(LOCAL_DIR)/nand.o
 endif
 
 ifeq ($(PLATFORM),msm8x60)

@@ -30,7 +30,8 @@
  */
 
 #include <debug.h>
-
+#include <reg.h>
+#include <platform/iomap.h>
 #include <dev/fbcon.h>
 #include <kernel/thread.h>
 #include <platform/debug.h>
@@ -45,6 +46,8 @@ void uart3_clock_init(void);
 void uart_init(void);
 
 struct fbcon_config *lcdc_init(void);
+
+static uint32_t ticks_per_sec = 0;
 
 void platform_early_init(void)
 {
@@ -81,3 +84,20 @@ void display_init(void)
 
 }
 
+void platform_init_timer(void)
+{
+	writel(0, DGT_ENABLE);
+
+	ticks_per_sec = DGT_HZ;
+}
+
+/* Returns timer ticks per sec */
+uint32_t platform_tick_rate(void)
+{
+	return ticks_per_sec;
+}
+
+int target_supports_qgic(void)
+{
+	return false;
+}
