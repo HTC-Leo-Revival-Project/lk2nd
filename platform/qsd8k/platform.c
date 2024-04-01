@@ -98,3 +98,8 @@ uint32_t platform_tick_rate(void)
 	return ticks_per_sec;
 }
 
+int target_supports_qgic(void)
+{
+	return 0;
+}
+

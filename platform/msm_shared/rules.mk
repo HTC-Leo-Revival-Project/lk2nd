@@ -145,12 +145,12 @@ ifeq ($(PLATFORM),qsd8k)
 	OBJS += $(LOCAL_DIR)/clock-local.o \
 			$(LOCAL_DIR)/clock.o \
 			$(LOCAL_DIR)/clock_pll.o \
+			$(LOCAL_DIR)/interrupts.o \
 			$(LOCAL_DIR)/board.o \
 			$(LOCAL_DIR)/scm.o \
 			$(LOCAL_DIR)/timer.o \
 			$(LOCAL_DIR)/nand.o
 endif
-#$(LOCAL_DIR)/interrupts.o
 
 ifeq ($(PLATFORM),msm8974)
 DEFINES += DISPLAY_TYPE_MDSS=1
