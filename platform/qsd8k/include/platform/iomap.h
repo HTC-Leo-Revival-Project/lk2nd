@@ -61,6 +61,11 @@
 //#if defined PLATFORM_QSD8K
 #define DGT_HZ 4800000	/* Uses TCXO/4 (19.2 MHz / 4) */
 
+#define MSM_IOMAP_BASE              0xA0000000
+#define MSM_IOMAP_END               0xAC300000
+
+#define MSM_IMEM_BASE            0xC0000000
+
 #if defined(PLATFORM_QSD8K)
 #define MSM_SHARED_BASE 0x00100000
 #else
