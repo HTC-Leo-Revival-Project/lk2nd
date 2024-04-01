@@ -117,20 +117,17 @@
 #define UART_MISR        0x0010
 #define UART_ISR         0x0014
 
-static unsigned uart_ready = 0;
-#if PLATFORM_MSM7X30
-static unsigned uart_base = MSM_UART2_BASE;
-#elif PLATFORM_MSM7X27A
+static unsigned uart_ready = 1;
 static unsigned uart_base = MSM_UART1_BASE;
-#else
-static unsigned uart_base = MSM_UART3_BASE;
-#endif
+
 
 #define uwr(v,a) writel(v, uart_base + (a))
 #define urd(a) readl(uart_base + (a))
 
 void uart_init(void)
 {
+
+	uwr(0x41, UART_TF);
 	uwr(0x0A, UART_CR);	/* disable TX and RX */
 
 	uwr(0x30, UART_CR);	/* reset error status */
@@ -177,13 +174,11 @@ void uart_init(void)
 	uart_ready = 1;
 }
 
+
 static int _uart_putc(int port, char c)
 {
-	if (!uart_ready)
-		return -1;
-	while (!(urd(UART_SR) & UART_SR_TX_READY)) ;
-	uwr(c, UART_TF);
-	return 0;
+	uint8_t hello_world[] = "uart_putc\n\n";
+	unsigned int length = sizeof(hello_world);
 }
 
 int uart_putc(int port, char c)
