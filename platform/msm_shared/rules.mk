@@ -148,7 +148,8 @@ ifeq ($(PLATFORM),qsd8k)
 			$(LOCAL_DIR)/board.o \
 			$(LOCAL_DIR)/scm.o \
 			$(LOCAL_DIR)/timer.o \
-			$(LOCAL_DIR)/nand.o
+			$(LOCAL_DIR)/nand.o \
+			$(LOCAL_DIR)/uart.o
 endif
 #$(LOCAL_DIR)/interrupts.o
 
