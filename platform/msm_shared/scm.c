@@ -1140,7 +1140,7 @@ int scm_random(uintptr_t * rbuf, uint32_t  r_len)
 uintptr_t get_canary(void)
 {
 	uintptr_t canary;
-	if(scm_random(&canary, sizeof(canary))) {
+	if(1) {
 		dprintf(CRITICAL,"scm_call for random failed !!!");
 		/*
 		* fall back to use lib rand API if scm call failed.
