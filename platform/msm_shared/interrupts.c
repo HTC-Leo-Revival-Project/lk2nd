@@ -43,7 +43,11 @@ enum handler_return platform_irq(struct arm_iframe *frame)
 	else
 		return vic_platform_irq(frame);
 #else
+#if TARGET_USES_VIC
+	return vic_platform_irq(frame);
+#else
 	return gic_platform_irq(frame);
+#endif
 #endif
 }
 
@@ -55,7 +59,11 @@ void platform_fiq(struct arm_iframe *frame)
 	else
 		vic_platform_fiq(frame);
 #else
+#if TARGET_USES_VIC
+	vic_platform_fiq(frame);
+#else
 	gic_platform_fiq(frame);
+#endif
 #endif
 }
 
@@ -67,7 +75,11 @@ status_t mask_interrupt(unsigned int vector)
 	else
 		return vic_mask_interrupt(vector);
 #else
+#if TARGET_USES_VIC
+	return vic_mask_interrupt(vector);
+#else
 	return gic_mask_interrupt(vector);
+#endif
 #endif
 }
 
@@ -79,7 +91,11 @@ status_t unmask_interrupt(unsigned int vector)
 	else
 		return vic_unmask_interrupt(vector);
 #else
+#if TARGET_USES_VIC
+	return vic_unmask_interrupt(vector);
+#else
 	return gic_unmask_interrupt(vector);
+#endif
 #endif
 }
 
@@ -91,6 +107,10 @@ void register_int_handler(unsigned int vector, int_handler func, void *arg)
 	else
 		vic_register_int_handler(vector, func, arg);
 #else
+#if TARGET_USES_VIC
+		vic_register_int_handler(vector, func, arg);
+#else
 		gic_register_int_handler(vector, func, arg);
+#endif
 #endif
 }
