@@ -37,6 +37,7 @@
 #include <dev/flash.h>
 #include <smem.h>
 #include <platform.h>
+#include <dev/fbcon.h>
 
 #define LINUX_MACHTYPE  2708
 
@@ -94,6 +95,10 @@ unsigned smem_get_apps_flash_start(void);
 void keypad_init(void);
 void target_early_init(void){
 	
+		// display not initialized
+	if(fbcon_display() == NULL) {
+		display_init();
+	}
 }
 void target_init(void)
 {
