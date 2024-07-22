@@ -102,28 +102,44 @@ static int _dprintf_output_func(char c, void *state)
 
 uint8_t *uarttf1 = (uint8_t *)0xA9A0000C;
 
-void uart_putc_msm(uint8_t *Buffer, unsigned int numberofbytes){
-	unsigned int bytesSent = 0;
-	while (bytesSent < numberofbytes){
-		writel(Buffer[bytesSent], (unsigned int)uarttf1);
-		bytesSent++;
-	}
+
+
+void uart_putc_msm(uint8_t *Buffer, unsigned int numberofbytes) {
+    unsigned int bytesSent = 0;
+    while (bytesSent < numberofbytes) {
+        if (Buffer[bytesSent] == '\n') {
+            // Write carriage return first
+            writel('\r', (unsigned int)uarttf1);
+        }
+        // Write the actual byte
+        writel(Buffer[bytesSent], (unsigned int)uarttf1);
+        bytesSent++;
+    }
 }
 
 int _dprintf(const char *fmt, ...)
 {
-	//paint_screen2(0xF);
 	char ts_buf[13];
 	int err;
 
-	snprintf(ts_buf, sizeof(ts_buf), "[%u] ",(unsigned int)current_time());
-	dputs(ALWAYS, ts_buf);
+	// Generate the timestamp buffer
+	snprintf(ts_buf, sizeof(ts_buf), "[%u] ", (unsigned int)current_time());
+
+	// Print the timestamp buffer
+	uart_putc_msm((uint8_t *)ts_buf, strlen(ts_buf));
 
 	va_list ap;
 	va_start(ap, fmt);
-	unsigned int length = strlen(fmt);
-	uart_putc_msm(fmt,length);
-	err = _printf_engine(&_dprintf_output_func, NULL, fmt, ap);
+
+	// Allocate a buffer large enough to hold the formatted message
+	char log_buf[256]; // Adjust size as needed
+	int length = vsnprintf(log_buf, sizeof(log_buf), fmt, ap);
+
+	// Print the formatted log message
+	if (length > 0) {
+		uart_putc_msm((uint8_t *)log_buf, length);
+	}
+
 	va_end(ap);
 
 	return err;
